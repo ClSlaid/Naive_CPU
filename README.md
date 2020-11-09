@@ -28,4 +28,4 @@ I'm planning to develop a 16-bits RISC CPU in *System Verilog*, the instruction 
   
 
 ## Special Thanks
-- @name1e5s
+- [@name1e5s](https://github.com/name1e5s)
