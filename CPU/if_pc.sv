@@ -2,7 +2,7 @@
 //
 // Define PC and its logic
 `timescale 1ns / 1ps
-
+`include "defines.sv"
 parameter RAM_BEGIN = 16'h0;
 
 module if_pc(

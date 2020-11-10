@@ -1,6 +1,8 @@
 // id_decoder.sv
 // decode instructions
 `timescale 1ns/1ps
+`include "defines.sv"
+
 module id(
 	input logic							rst,			// reset
 	// combinational logic, no clock needed
@@ -25,10 +27,10 @@ module id(
 	output logic[`AluSelBus]		alusel,			// ALU Operation code
 	
 	output logic[`RegBus]			reg1_data_out,	// data from register read port 1, pass to EX phase
-	output logic[`RegBus]			reg2_data_out	//	data from register read port 2, pass to EX phase
+	output logic[`RegBus]			reg2_data_out,	//	data from register read port 2, pass to EX phase
 
 	output logic[`RegAddrBus]		wd_o,				// register address to write to
-	output logic						wreg_o,			// whether to write to register
+	output logic						wreg_o			// whether to write to register
 );
 	
 	
@@ -84,7 +86,7 @@ module id(
 	end
 
 // get from reg 1?
-	always_comb begin:
+	always_comb begin: read_reg_1
 		if(rst == `RstEnable)	begin
 			reg1_data_out = `ZeroWord;
 		end else if (reg1_read == `ReadEnable) begin
@@ -97,7 +99,7 @@ module id(
 	end
 
 // get from reg 2?
-	always_comb begin:
+	always_comb begin: read_reg_2
 		if(rst == `RstEnable)	begin
 			reg2_data_out = `ZeroWord;
 		end else if (reg2_read == `ReadEnable) begin

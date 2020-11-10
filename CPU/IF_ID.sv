@@ -2,7 +2,8 @@
 // temporarily store instruction and its address
 // pass to ID phase at the next clk
 `timescale 1ns/1ps
-module if_id(
+`include "defines.sv"
+module IF_ID(
 	input logic rst,
 	input logic clk,
 	

@@ -1,6 +1,8 @@
 // regfile.sv
 // registers!
 `timescale 1ns/1ps
+`include "defines.sv"
+
 module regfile(
 	input logic clk,
 	input logic rst,
@@ -40,7 +42,7 @@ module regfile(
 	always_comb begin
 		if (rst == `RstEnable) begin
 			r1data = `ZeroWord;
-		end else if(raddr1 == `RegNumLog2'h0) begin
+		end else if(r1addr == `RegNumLog2'h0) begin
 			r1data = `ZeroWord;
 		end else if(r1e == `ReadEnable)begin
 			if((we == `WriteEnable)&&(r1addr == waddr))begin
@@ -58,7 +60,7 @@ module regfile(
 	always_comb begin
 		if (rst == `RstEnable) begin
 			r2data = `ZeroWord;
-		end else if(raddr2 == `RegNumLog2'h0) begin
+		end else if(r2addr == `RegNumLog2'h0) begin
 			r2data = `ZeroWord;
 		end else if(r2e == `ReadEnable)begin
 			if((we == `WriteEnable)&&(r2addr == waddr))begin
