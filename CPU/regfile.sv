@@ -20,7 +20,12 @@ module regfile(
 	// read port 2
 	input logic						r2e,		// read port 2 enable
 	input logic [`RegAddrBus]	r2addr,	// read port 2 address
-	output logic[`RegBus]	r2data	// read port 2 data
+	output logic[`RegBus]	r2data,	// read port 2 data
+
+	// read port for sampling
+	input logic					rse,			// sampling read port enable
+	input logic[`RegAddrBus]	rsaddr,			// sampling read port address
+	output logic[`RegBus]		rsdata		 	// sampling read port data
 	);
 	
 	
@@ -72,5 +77,20 @@ module regfile(
 			r2data = `ZeroWord;
 		end
 	end
-	
+	// ------------sampling-------------
+	always_comb begin
+		if (rst == `RstEnable) begin
+			rsdata = `ZeroWord;
+		end else if(rsaddr == `RegNumLog2'h0) begin
+			rsdata = `ZeroWord;
+		end else if(rse == `ReadEnable)begin
+			if((we == `WriteEnable)&&(rsaddr == waddr))begin
+				rsdata = wdata;
+			end else begin
+				rsdata = Registers[rsaddr];
+			end
+		end else begin
+			rsdata = `ZeroWord;
+		end
+	end
 endmodule

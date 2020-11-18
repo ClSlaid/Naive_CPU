@@ -14,7 +14,7 @@ module ex_alu(
     
     output logic[`RegAddrBus]   wd_o,       // address to write to
     output logic                wreg_o,     // whether to write to
-    output logic[`RegBus]       wdata_o
+    output logic[`RegBus]       wdata_o     // calculate outcome
 );
     logic[`RegBus]  logicout;
     

@@ -59,4 +59,4 @@
 `define RegNum				16				// Number of registers
 `define RegNumLog2		4				// Actual Regfile Address Bus width
 
-`define NOPRegAddr		5'b00000
+`define NOPRegAddr		4'b0000

@@ -8,10 +8,14 @@ module Naive_CPU(
 	input logic					clk,
 
 	input logic[`RegBus]		rom_data_i,
+	output logic[`RegBus]		rom_addr_o,		
+	output logic				rom_ce_o,		// ROM Enable
+	
+	// sampling ports
+	input logic[`RegAddrBus]	ob_sel,
+	output logic[`RegBus]		ob_data_o,
 
-
-	output logic[`RegAddrBus]	rom_addr_o,		
-	output logic				rom_ce_o		// ROM Enable
+	input logic[2:0]			ob_mode
 );
 
 	// IF/ID -> ID
@@ -71,8 +75,32 @@ module Naive_CPU(
 	wire[`RegBus]		reg2_data;
 	wire[`RegAddrBus]	reg1_addr;
 	wire[`RegAddrBus]	reg2_addr;
+	
+	// observer <-> Regfile
+	
+	wire				ob_reg_read;
+	wire[`RegBus]		ob_reg_data;
+	wire[`RegAddrBus] 	ob_reg_addr;
 
 	//***********realizations************
+
+	// observer!
+	observer ob0(
+		.reg_data_i (ob_reg_data),
+		.reg_sel_o	(ob_reg_addr),
+		.reg_read_o (ob_reg_read),
+
+		.pc_i       (pc),
+		.ir_i		(id_inst_i),
+
+		.alu_a_i	(ex_reg1_i),
+		.alu_b_i	(ex_reg2_i),
+		.alu_o_i	(ex_wdata_o),
+
+		.reg_sel_i	(ob_sel),
+		.sel_i		(ob_mode),
+		.data_o		(ob_data_o)
+	);
 	// PC
 	if_pc if_pc0(
 		.rst	(rst),
@@ -111,8 +139,8 @@ module Naive_CPU(
 		
 		.aluop(id_aluop_o),
 		.alusel(id_alusel_o),
-		.reg1_o(id_reg1_o),
-		.reg2_o(id_reg2_o),
+		.reg1_data_out(id_reg1_o),
+		.reg2_data_out(id_reg2_o),
 		.wd_o(id_wd_o),
 		.wreg_o(id_wreg_o)
 	);
@@ -130,7 +158,10 @@ module Naive_CPU(
 		.r1addr(reg1_addr),
 		.r2addr(reg2_addr),
 		.r1data(reg1_data),
-		.r2data(reg2_data)
+		.r2data(reg2_data),
+		.rse(ob_reg_read),
+		.rsaddr(ob_reg_addr),
+		.rsdata(ob_reg_data)
 	);
 
 	// realization of ID/EX
@@ -163,7 +194,7 @@ module Naive_CPU(
 		.wd_i(ex_wd_i),
 		.wreg_i(ex_wreg_i),
 		.wd_o(ex_wd_o),
-		.wreg_o(ex_wd_o),
+		.wreg_o(ex_wreg_o),
 		.wdata_o(ex_wdata_o)
 	);
 

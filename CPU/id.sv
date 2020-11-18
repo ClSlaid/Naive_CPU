@@ -33,8 +33,8 @@ module id(
 	output logic						wreg_o			// whether to write to register
 );
 	
-	
-	logic[5:0] opcode = if_inst[15:10];
+	logic[5:0] opcode;
+	assign opcode = if_inst[15:10];
 	
 	logic[`RegBus]	imm;
 	
@@ -48,7 +48,7 @@ module id(
 			alusel = `EXE_RES_NOP;
 			wd_o = `NOPRegAddr;
 			wreg_o = `WriteDisable;
-			inst_valid = `InstValid;
+			inst_valid = `InstInvalid;
 			reg1_read = 1'b0;
 			reg2_read = 1'b0;
 			reg1_read_addr = `NOPRegAddr;
