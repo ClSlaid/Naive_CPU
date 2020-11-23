@@ -14,7 +14,18 @@ module id(
 	//	value from Registers
 	input logic [`RegBus]			reg1_data_in,	// data from register read port 1
 	input logic [`RegBus]			reg2_data_in,	// data from register read port 2
-	
+
+	/* data forwarding */
+	// data forward from EXecute phase
+	input logic						ex_wreg_i,
+	input logic [`RegBus]			ex_wdata_i,
+	input logic [`RegAddrBus]		ex_wd_i,
+	// data forward from MEMory phase
+	input logic						mem_wreg_i,
+	input logic [`RegBus]			mem_wdata_i,
+	input logic [`RegAddrBus]		mem_wd_i,
+	/* end data forwarding*/
+
 	// operation to RegFile
 	output logic						reg1_read,		// register read port 1 enable
 	output logic						reg2_read,		//	register read port 2 enable
@@ -89,6 +100,10 @@ module id(
 	always_comb begin: read_reg_1
 		if(rst == `RstEnable)	begin
 			reg1_data_out = `ZeroWord;
+		end else if((reg1_read == 1'b1) && (ex_wreg_i == 1'b1) && (reg1_read_addr == ex_wd_i))begin
+			reg1_data_out = ex_wdata_i;
+		end else if((reg1_read == 1'b1) && (mem_wreg_i == 1'b1) && (reg1_read_addr == mem_wd_i))begin
+			reg1_data_out = mem_wdata_i;
 		end else if (reg1_read == `ReadEnable) begin
 			reg1_data_out = reg1_data_in;
 		end else if	(reg1_read == `ReadDisable) begin
@@ -102,6 +117,10 @@ module id(
 	always_comb begin: read_reg_2
 		if(rst == `RstEnable)	begin
 			reg2_data_out = `ZeroWord;
+		end else if ((reg2_read == 1'b1) && (ex_wreg_i == 1'b1) && (reg2_read_addr == ex_wd_i)) begin
+			reg2_data_out = ex_wdata_i;
+		end else if ((reg2_read == 1'b1) && (mem_wreg_i == 1'b1) && (reg2_read_addr == mem_wd_i)) begin
+			reg2_data_out = mem_wdata_i;
 		end else if (reg2_read == `ReadEnable) begin
 			reg2_data_out = reg2_data_in;
 		end else if (reg2_read == `ReadDisable) begin

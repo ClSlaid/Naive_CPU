@@ -105,6 +105,7 @@ module Naive_CPU(
 	if_pc if_pc0(
 		.rst	(rst),
 		.clk	(clk),
+
 		.pc_addr(pc),
 		.pc_en	(rom_ce_o)
 	);
@@ -132,6 +133,14 @@ module Naive_CPU(
 		.reg1_data_in(reg1_data),
 		.reg2_data_in(reg2_data),
 
+		.ex_wreg_i(ex_wreg_o),
+		.ex_wdata_i(ex_wdata_o),
+		.ex_wd_i(ex_wd_o),
+
+		.mem_wreg_i(mem_wreg_o),
+		.mem_wdata_i(mem_wdata_o),
+		.mem_wd_i(mem_wd_o),
+
 		.reg1_read(reg1_read),
 		.reg2_read(reg2_read),
 		.reg1_read_addr(reg1_addr),
@@ -150,15 +159,18 @@ module Naive_CPU(
 	regfile regfile0(
 		.clk(clk),
 		.rst(rst),
+
 		.we(wb_wreg_i),
 		.waddr(wb_wd_i),
 		.wdata(wb_wdata_i),
+
 		.r1e(reg1_read),
 		.r2e(reg2_read),
 		.r1addr(reg1_addr),
 		.r2addr(reg2_addr),
 		.r1data(reg1_data),
 		.r2data(reg2_data),
+
 		.rse(ob_reg_read),
 		.rsaddr(ob_reg_addr),
 		.rsdata(ob_reg_data)
@@ -169,12 +181,15 @@ module Naive_CPU(
 	ID_EX id_ex0(
 		.clk(clk),
 		.rst(rst),
+
 		.id_aluop(id_aluop_o),
 		.id_alusel(id_alusel_o),
+
 		.id_reg1(id_reg1_o),
 		.id_reg2(id_reg2_o),
 		.id_wd(id_wd_o),
 		.id_wreg(id_wreg_o),
+
 		.ex_aluop(ex_aluop_i),
 		.ex_alusel(ex_alusel_i),
 		.ex_reg1(ex_reg1_i),
@@ -187,12 +202,16 @@ module Naive_CPU(
 
 	ex_alu ex_alu0(
 		.rst (rst),
+
 		.aluop_i(ex_aluop_i),
 		.alusel_i(ex_alusel_i),
+
 		.reg1_i(ex_reg1_i),
 		.reg2_i(ex_reg2_i),
+
 		.wd_i(ex_wd_i),
 		.wreg_i(ex_wreg_i),
+
 		.wd_o(ex_wd_o),
 		.wreg_o(ex_wreg_o),
 		.wdata_o(ex_wdata_o)
@@ -203,9 +222,11 @@ module Naive_CPU(
 	EX_MEM ex_mem0(
 		.rst(rst),
 		.clk(clk),
+
 		.ex_wd(ex_wd_o),
 		.ex_wreg(ex_wreg_o),
 		.ex_wdata(ex_wdata_o),
+
 		.mem_wd(mem_wd_i),
 		.mem_wreg(mem_wreg_i),
 		.mem_wdata(mem_wdata_i)
