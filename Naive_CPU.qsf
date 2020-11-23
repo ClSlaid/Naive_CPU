@@ -36,16 +36,108 @@
 # -------------------------------------------------------------------------- #
 
 
-set_global_assignment -name FAMILY "Cyclone IV GX"
-set_global_assignment -name DEVICE EP4CGX30CF23C7
+set_global_assignment -name FAMILY "Cyclone IV E"
+set_global_assignment -name DEVICE EP4CE30F23C8
 set_global_assignment -name TOP_LEVEL_ENTITY Naive_CPU
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "20:41:34  NOVEMBER 01, 2020"
-set_global_assignment -name LAST_QUARTUS_VERSION 13.1
+set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
-set_global_assignment -name NOMINAL_CORE_SUPPLY_VOLTAGE 1.2V
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/id.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/Naive_CPU.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/if_pc.sv
+set_global_assignment -name SYSTEMVERILOG_FILE TestBench/if_pc_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/defines.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/IF_ID.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/regfile.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/ID_EX.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/ex_alu.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/EX_MEM.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/mem.sv
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/MEM_WB.sv
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_parameter -name NUM_PARALLEL_PROCESSORS 8
+set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
+set_global_assignment -name SYSTEMVERILOG_FILE ROM/ROM.sv
+set_global_assignment -name SYSTEMVERILOG_FILE SOPC/SOPC.sv
+set_location_assignment PIN_AB12 -to clk
+set_location_assignment PIN_AA13 -to rom_addr_o[15]
+set_location_assignment PIN_Y10 -to rom_addr_o[14]
+set_location_assignment PIN_AB10 -to rom_addr_o[13]
+set_global_assignment -name SYSTEMVERILOG_FILE CPU/observer.sv
+set_location_assignment PIN_AA10 -to rom_addr_o[12]
+set_location_assignment PIN_AB9 -to rom_addr_o[11]
+set_location_assignment PIN_AA9 -to rom_addr_o[10]
+set_location_assignment PIN_AB8 -to rom_addr_o[9]
+set_location_assignment PIN_B3 -to rom_data_i[0]
+set_location_assignment PIN_B1 -to rom_data_i[2]
+set_location_assignment PIN_C2 -to rom_data_i[3]
+set_location_assignment PIN_C1 -to rom_data_i[4]
+set_location_assignment PIN_D1 -to rom_data_i[6]
+set_location_assignment PIN_AB13 -to rom_data_i[8]
+set_location_assignment PIN_AB14 -to rom_data_i[10]
+set_location_assignment PIN_AA15 -to rom_data_i[11]
+set_location_assignment PIN_AB15 -to rom_data_i[12]
+set_location_assignment PIN_AA16 -to rom_data_i[13]
+set_location_assignment PIN_AB16 -to rom_data_i[14]
+set_location_assignment PIN_B2 -to rom_data_i[1]
+set_location_assignment PIN_AB17 -to ob_data_o[0]
+set_location_assignment PIN_AA18 -to ob_data_o[1]
+set_location_assignment PIN_AB18 -to ob_data_o[2]
+set_location_assignment PIN_AA19 -to ob_data_o[3]
+set_location_assignment PIN_AB19 -to ob_data_o[4]
+set_location_assignment PIN_AA20 -to ob_data_o[5]
+set_location_assignment PIN_AB20 -to ob_data_o[6]
+set_location_assignment PIN_AA21 -to ob_data_o[7]
+set_location_assignment PIN_Y21 -to ob_data_o[8]
+set_location_assignment PIN_Y22 -to ob_data_o[9]
+set_location_assignment PIN_W21 -to ob_data_o[10]
+set_location_assignment PIN_W22 -to ob_data_o[11]
+set_location_assignment PIN_V21 -to ob_data_o[12]
+set_location_assignment PIN_V22 -to ob_data_o[13]
+set_location_assignment PIN_U21 -to ob_data_o[14]
+set_location_assignment PIN_U22 -to ob_data_o[15]
+set_location_assignment PIN_V3 -to ob_sel[0]
+set_location_assignment PIN_Y3 -to ob_sel[1]
+set_location_assignment PIN_V4 -to ob_sel[2]
+set_location_assignment PIN_Y4 -to ob_sel[3]
+set_location_assignment PIN_N21 -to rst
+set_location_assignment PIN_AA3 -to rom_addr_o[0]
+set_location_assignment PIN_AB3 -to rom_addr_o[1]
+set_location_assignment PIN_AA4 -to rom_addr_o[2]
+set_location_assignment PIN_AB4 -to rom_addr_o[3]
+set_location_assignment PIN_AA5 -to rom_addr_o[4]
+set_location_assignment PIN_AB5 -to rom_addr_o[5]
+set_location_assignment PIN_AA7 -to rom_addr_o[6]
+set_location_assignment PIN_AB7 -to rom_addr_o[7]
+set_location_assignment PIN_AA8 -to rom_addr_o[8]
+set_location_assignment PIN_D2 -to rom_data_i[5]
+set_location_assignment PIN_E2 -to rom_data_i[7]
+set_location_assignment PIN_AA14 -to rom_data_i[9]
+set_location_assignment PIN_AA17 -to rom_data_i[15]
+set_location_assignment PIN_V5 -to ob_mode[0]
+set_location_assignment PIN_Y6 -to ob_mode[1]
+set_global_assignment -name ENABLE_OCT_DONE OFF
+set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
+set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
+set_global_assignment -name USE_CONFIGURATION_DEVICE OFF
+set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS PROGRAMMING PIN"
+set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
+set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
+set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
+set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
+set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+set_global_assignment -name RESERVE_DATA1_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_FLASH_NCE_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
