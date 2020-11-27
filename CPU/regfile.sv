@@ -32,6 +32,24 @@ module regfile(
 	//------------registers--------
 	logic [`RegWidth - 1 : 0] Registers[0 : `RegNum - 1];	// Registers
 	
+	// initial begin
+	// 	Registers[0] <= 16'b0;
+	// 	Registers[1] <= 16'b0;
+	// 	Registers[2] <= 16'b0;
+	// 	Registers[3] <= 16'b0;
+	// 	Registers[4] <= 16'b0;
+	// 	Registers[5] <= 16'b0;
+	// 	Registers[6] <= 16'b0;
+	// 	Registers[7] <= 16'b0;
+	// 	Registers[8] <= 16'b0;
+	// 	Registers[9] <= 16'b0;
+	// 	Registers[10] <= 16'b0;
+	// 	Registers[11] <= 16'b0;
+	// 	Registers[12] <= 16'b0;
+	// 	Registers[13] <= 16'b0;
+	// 	Registers[14] <= 16'b0;
+	// 	Registers[15] <= 16'b0;
+	// end
 	
 	//------------write------------
 	always_ff @(posedge clk) begin
@@ -39,6 +57,23 @@ module regfile(
 			if ((we == `WriteEnable) && (waddr != `RegNumLog2'b0)) begin
 				Registers[waddr] <= wdata;
 			end
+		end else begin
+			Registers[0] <= 16'b0;
+			Registers[1] <= 16'b0;
+			Registers[2] <= 16'b0;
+			Registers[3] <= 16'b0;
+			Registers[4] <= 16'b0;
+			Registers[5] <= 16'b0;
+			Registers[6] <= 16'b0;
+			Registers[7] <= 16'b0;
+			Registers[8] <= 16'b0;
+			Registers[9] <= 16'b0;
+			Registers[10] <= 16'b0;
+			Registers[11] <= 16'b0;
+			Registers[12] <= 16'b0;
+			Registers[13] <= 16'b0;
+			Registers[14] <= 16'b0;
+			Registers[15] <= 16'b0;
 		end
 	end
 	

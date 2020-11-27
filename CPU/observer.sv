@@ -12,7 +12,7 @@ module observer(
     input logic[`RegBus]            alu_o_i,
 
     input logic[`RegAddrBus]        reg_sel_i,
-    input logic[2:0]                sel_i,
+    input logic[2:0]                mode_i,
 
     output logic[`RegAddrBus]       reg_sel_o,
     output logic                    reg_read_o,
@@ -21,7 +21,7 @@ module observer(
     assign reg_sel_o = reg_sel_i;
 
     always_comb begin:read_reg
-        if(sel_i == 3'd3) begin
+        if(mode_i == 3'd3) begin
             reg_read_o = 1'b1;
         end else begin
             reg_read_o = 1'b0;
@@ -29,7 +29,7 @@ module observer(
     end
 
     always_comb begin:data_select
-        case(sel_i)
+        case(mode_i)
             3'd0: begin
                 data_o = pc_i;
             end
@@ -38,10 +38,10 @@ module observer(
             end
             3'd2:begin
                 case(reg_sel_i)
-                    8'd1:begin
+                    4'd1:begin
                         data_o = alu_a_i;
                     end
-                    8'd2:begin
+                    4'd2:begin
                         data_o = alu_b_i;
                     end
                     default: begin

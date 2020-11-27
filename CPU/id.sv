@@ -17,13 +17,13 @@ module id(
 
 	/* data forwarding */
 	// data forward from EXecute phase
-	input logic						ex_wreg_i,
-	input logic [`RegBus]			ex_wdata_i,
-	input logic [`RegAddrBus]		ex_wd_i,
+	input logic						ex_wreg_f,
+	input logic [`RegBus]			ex_wdata_f,
+	input logic [`RegAddrBus]		ex_wd_f,
 	// data forward from MEMory phase
-	input logic						mem_wreg_i,
-	input logic [`RegBus]			mem_wdata_i,
-	input logic [`RegAddrBus]		mem_wd_i,
+	input logic						mem_wreg_f,
+	input logic [`RegBus]			mem_wdata_f,
+	input logic [`RegAddrBus]		mem_wd_f,
 	/* end data forwarding*/
 
 	// operation to RegFile
@@ -46,8 +46,13 @@ module id(
 	
 	logic[5:0] opcode;
 	assign opcode = if_inst[15:10];
+	logic[`RegAddrBus] rd;
+	logic[`RegAddrBus] rs;
+	logic[`RegBus] imm;
+	assign rd = if_inst[9:6];
+	assign rs = if_inst[5:2];
+	assign imm = {10'h0, if_inst[5:0]};
 	
-	logic[`RegBus]	imm;
 	
 	logic inst_valid;
 	
@@ -64,7 +69,6 @@ module id(
 			reg2_read = 1'b0;
 			reg1_read_addr = `NOPRegAddr;
 			reg2_read_addr = `NOPRegAddr;
-			imm = `ZeroWord;
 		end else begin
 			aluop = `EXE_NOP_OP;
 			alusel = `EXE_RES_NOP;
@@ -73,21 +77,101 @@ module id(
 			inst_valid = `InstValid;
 			reg1_read = 1'b0;
 			reg2_read = 1'b0;
-			reg1_read_addr = if_inst[9:6];
-			reg2_read_addr = if_inst[5:2];
-			imm = `ZeroWord;
+			reg1_read_addr = rd;
+			reg2_read_addr = rs;
 			
 			case(opcode)
 			
-				`EXE_ORI:	begin	// is ORI operation:	ORI rd imm
+				`EXE_AND:	begin	// is AND operation:	AND rd rs
+					wreg_o = `WriteEnable;
+					aluop = `EXE_AND_OP;
+					alusel = `EXE_RES_LOGIC;
+					
+					reg1_read = 1'b1;
+					reg2_read = 1'b1;
+
+					reg1_read_addr = rd;
+					reg2_read_addr = rs;
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+					
+				end
+				`EXE_OR:	begin	// is OR operation:		OR rd rs
 					wreg_o = `WriteEnable;
 					aluop = `EXE_OR_OP;
 					alusel = `EXE_RES_LOGIC;
-					reg1_read_addr = 1'b1;	// read from rd
-					reg2_read_addr = 1'b0;	// no rs but imm here
-					imm = {10'h0, if_inst[5:0]};
-					wd_o = if_inst[9:6];
+
+					reg1_read = 1'b1;
+					reg2_read = 1'b1;
+
+					reg1_read_addr = rd;
+					reg2_read_addr = rs;
+
+					wd_o = rd;
 					inst_valid = `InstValid;
+					
+				end
+				`EXE_XOR:	begin	// is XOR operation:	XOR rd rs
+					wreg_o = `WriteEnable;
+					aluop = `EXE_XOR_OP;
+					alusel = `EXE_RES_LOGIC;
+
+					reg1_read = 1'b1;
+					reg2_read = 1'b1;
+
+					reg1_read_addr = rd;
+					reg2_read_addr = rs;
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+					
+				end
+				`EXE_NOR:	begin	// is NOR operation:	NOR rd rs;
+					wreg_o = `WriteEnable;
+
+					aluop = `EXE_NOR_OP;
+					alusel = `EXE_RES_LOGIC;
+
+					reg1_read = 1'b1;
+					reg2_read = 1'b1;
+
+					reg1_read_addr = rd;
+					reg2_read_addr = rs;
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+				end
+				`EXE_ANDI:	begin	// is ANDI operation:	ANDI rd imm
+					wreg_o = `WriteEnable;
+
+					aluop = `EXE_AND_OP;
+					alusel = `EXE_RES_LOGIC;
+
+					reg1_read = 1'b1;
+					reg2_read = 1'b0;
+
+					reg1_read_addr = rd;
+					reg2_read_addr = 4'h0;
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+				end
+				`EXE_ORI:	begin	// is ORI operation:	ORI rd imm
+					wreg_o = `WriteEnable;
+
+					aluop = `EXE_OR_OP;
+					alusel = `EXE_RES_LOGIC;
+
+					reg1_read = 1'b1;	// read from rd
+					reg2_read = 1'b0;	// no rs but imm here
+
+					reg1_read_addr = rd;
+					reg2_read_addr = rs;
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+				
 				end
 				default:	begin
 				end
@@ -100,10 +184,10 @@ module id(
 	always_comb begin: read_reg_1
 		if(rst == `RstEnable)	begin
 			reg1_data_out = `ZeroWord;
-		end else if((reg1_read == 1'b1) && (ex_wreg_i == 1'b1) && (reg1_read_addr == ex_wd_i))begin
-			reg1_data_out = ex_wdata_i;
-		end else if((reg1_read == 1'b1) && (mem_wreg_i == 1'b1) && (reg1_read_addr == mem_wd_i))begin
-			reg1_data_out = mem_wdata_i;
+		end else if((reg1_read == 1'b1) && (ex_wreg_f == 1'b1) && (reg1_read_addr == ex_wd_f))begin
+			reg1_data_out = ex_wdata_f;
+		end else if((reg1_read == 1'b1) && (mem_wreg_f == 1'b1) && (reg1_read_addr == mem_wd_f))begin
+			reg1_data_out = mem_wdata_f;
 		end else if (reg1_read == `ReadEnable) begin
 			reg1_data_out = reg1_data_in;
 		end else if	(reg1_read == `ReadDisable) begin
@@ -117,10 +201,10 @@ module id(
 	always_comb begin: read_reg_2
 		if(rst == `RstEnable)	begin
 			reg2_data_out = `ZeroWord;
-		end else if ((reg2_read == 1'b1) && (ex_wreg_i == 1'b1) && (reg2_read_addr == ex_wd_i)) begin
-			reg2_data_out = ex_wdata_i;
-		end else if ((reg2_read == 1'b1) && (mem_wreg_i == 1'b1) && (reg2_read_addr == mem_wd_i)) begin
-			reg2_data_out = mem_wdata_i;
+		end else if ((reg2_read == 1'b1) && (ex_wreg_f == 1'b1) && (reg2_read_addr == ex_wd_f)) begin
+			reg2_data_out = ex_wdata_f;
+		end else if ((reg2_read == 1'b1) && (mem_wreg_f == 1'b1) && (reg2_read_addr == mem_wd_f)) begin
+			reg2_data_out = mem_wdata_f;
 		end else if (reg2_read == `ReadEnable) begin
 			reg2_data_out = reg2_data_in;
 		end else if (reg2_read == `ReadDisable) begin

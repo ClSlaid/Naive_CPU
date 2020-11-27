@@ -19,13 +19,22 @@ module ex_alu(
     logic[`RegBus]  logicout;
     
     // ALU Main
-    always_comb begin: ALU
+    always_comb begin: ALU_LOGIC
         if(rst == `RstEnable) begin
             logicout = `ZeroWord;
         end else begin
             case (aluop_i)
+                `EXE_AND_OP: begin  // AND calculation
+                    logicout = reg1_i & reg2_i;
+                end
                 `EXE_OR_OP: begin
                     logicout = reg1_i | reg2_i;
+                end
+                `EXE_XOR_OP: begin
+                    logicout = reg1_i ^ reg2_i;
+                end
+                `EXE_NOP_OP: begin
+                    logicout = ~ (reg1_i | reg2_i);
                 end
                 default: begin
                     logicout = `ZeroWord;

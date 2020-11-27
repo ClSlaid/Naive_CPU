@@ -2,6 +2,7 @@
 // defines is here
 
 // --------------------Global defines------------------------
+`define Step                16'h1        // single step of pc
 `define ZeroWord			16'h0000		// Zero Word in 16 bits
 
 `define RstEnable			1'b1			// rst signal enabled
@@ -27,11 +28,29 @@
 
 
 // -------------------Instruction defines--------------------
-`define EXE_ORI			6'b001101	// Instruction ORI; Known as:	ORI rd imm;
+// -----------Logic---------
 `define EXE_NOP			6'b000000	// Instruction NOP; Known as Doing Nothing;
 
+`define EXE_OR          6'b100101   // Instruction OR; Known as: OR rd rs;
+`define EXE_ORI			6'b001101	// Instruction ORI; Known as:	ORI rd imm;
+
+`define EXE_AND         6'b100100   // Instruction AND; Known as: AND rd rs;
+`define EXE_ANDI        6'b001100   // Instruction ANDI; Known as: ANDI rd imm;
+
+`define EXE_XOR         6'b100110   // Instruction XOR; Known as: XOR rd rs;
+`define EXE_XORI        6'b001110   // Instruction XORI; Known as: XORI rd imm;
+
+`define EXE_NOR         6'b100111
+// -----------???---------
+`define EXE_LUI         6'b001111
+// -----------positional---------
+
 // Alu Operations
+`define EXE_AND_OP          8'b00100100
 `define EXE_OR_OP			8'b00100101
+`define EXE_XOR_OP          8'b00100110
+`define EXE_NOR_OP          8'b00100111
+
 `define EXE_NOP_OP		8'b00000000
 
 // AluSel

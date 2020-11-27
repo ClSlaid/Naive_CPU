@@ -98,7 +98,7 @@ module Naive_CPU(
 		.alu_o_i	(ex_wdata_o),
 
 		.reg_sel_i	(ob_sel),
-		.sel_i		(ob_mode),
+		.mode_i		(ob_mode),
 		.data_o		(ob_data_o)
 	);
 	// PC
@@ -106,8 +106,8 @@ module Naive_CPU(
 		.rst	(rst),
 		.clk	(clk),
 
-		.pc_addr(pc),
-		.pc_en	(rom_ce_o)
+		.pc(pc),
+		.ce(rom_ce_o)
 	);
 
 	assign rom_addr_o = pc;
@@ -133,13 +133,13 @@ module Naive_CPU(
 		.reg1_data_in(reg1_data),
 		.reg2_data_in(reg2_data),
 
-		.ex_wreg_i(ex_wreg_o),
-		.ex_wdata_i(ex_wdata_o),
-		.ex_wd_i(ex_wd_o),
+		.ex_wreg_f(ex_wreg_o),
+		.ex_wdata_f(ex_wdata_o),
+		.ex_wd_f(ex_wd_o),
 
-		.mem_wreg_i(mem_wreg_o),
-		.mem_wdata_i(mem_wdata_o),
-		.mem_wd_i(mem_wd_o),
+		.mem_wreg_f(mem_wreg_o),
+		.mem_wdata_f(mem_wdata_o),
+		.mem_wd_f(mem_wd_o),
 
 		.reg1_read(reg1_read),
 		.reg2_read(reg2_read),
