@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 `include "../CPU/defines.sv"
+`include "../CPU/observer.sv"
 
 module observer_tb();
     reg [2:0] mode_i;

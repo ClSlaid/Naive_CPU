@@ -15,33 +15,35 @@
 module CPU_tb();
 reg clk;
 reg rst;
-reg [2:0] mode;
-reg [`InstBus] rom_data;
-reg [`InstAddrBus] rom_addr;
-reg rom_ce_o;
-reg [`RegAddrBus] reg_sel;
-reg [`RegBus] reg_data;
+
+reg [2:0] ob_mode;
+reg [`InstBus] rom_data_i;
+wire [`InstAddrBus] rom_addr_o;
+
+wire rom_ce_o;
+reg [`RegAddrBus] ob_sel;
+wire [`RegBus] ob_data_o;
+
 initial begin
     clk = 0;
     rst = 1;
-    mode = 3'b0;
-    rom_addr = 16'h0;
-    reg_sel = 4'h0;
-    reg_data = 16'h0;
+    ob_mode = 3'b0;
+    ob_sel = 4'h0;
+    rom_data_i = 16'h0;
     #40 rst = 0;
 end
 
 always #5 clk = ~clk;
-always rom_data = 16'b001101_0001_000011;
+always rom_data_i = 16'b001101_0001_000011;
 Naive_CPU nc0(
     .clk(clk),
     .rst(rst),
-    .rom_data_i(rom_data),
-    .rom_addr_o(rom_addr_bus),
+    .rom_data_i(rom_data_i),
+    .rom_addr_o(rom_addr_o),
     .rom_ce_o(rom_ce_o),
-    .ob_sel(reg_sel),
-    .ob_data_o(reg_data),
-    .ob_mode(mode)
+    .ob_sel(ob_sel),
+    .ob_data_o(ob_data_o),
+    .ob_mode(ob_mode)
 );
 
 endmodule
