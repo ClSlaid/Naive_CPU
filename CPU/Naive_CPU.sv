@@ -7,85 +7,87 @@ module Naive_CPU(
 	input logic					rst,
 	input logic					clk,
 
-	input logic[`RegBus]		rom_data_i,
-	output logic[`RegBus]		rom_addr_o,		
+	input logic[`InstBus]		rom_data_i,
+	output logic[`InstAddrBus]		rom_addr_o,		
 	output logic				rom_ce_o,		// ROM Enable
 	
 	// sampling ports
 	input logic[`RegAddrBus]	ob_sel,
 	output logic[`RegBus]		ob_data_o,
 
-	input logic[2:0]			ob_mode
+	input logic[2:0]			ob_mode_i
 );
+	// pc -> IF/ID
 
+	logic[`InstAddrBus]	pc;
 	// IF/ID -> ID
 
-	wire[`InstAddrBus]	pc;
-	wire[`InstAddrBus]	id_pc_i;
-	wire[`InstBus]		id_inst_i;
+	logic[`InstAddrBus]	id_pc_i;
+	logic[`InstBus]		id_inst_i;
 
 	// ID -> ID/EX
 
-	wire[`AluOpBus]		id_aluop_o;
-	wire[`AluSelBus]	id_alusel_o;
-	wire[`RegBus]		id_reg1_o;
-	wire[`RegBus]		id_reg2_o;
-	wire				id_wreg_o;
-	wire[`RegAddrBus]	id_wd_o;
+	logic[`AluOpBus]		id_aluop_o;
+	logic[`AluSelBus]	id_alusel_o;
+	logic[`RegBus]		id_reg1_o;
+	logic[`RegBus]		id_reg2_o;
+	logic				id_wreg_o;
+logic[`RegAddrBus]	id_wd_o;
 
 	// ID/EX -> EX
 
-	wire[`AluOpBus]		ex_aluop_i;
-	wire[`AluSelBus]	ex_alusel_i;
-	wire[`RegBus]		ex_reg1_i;
-	wire[`RegBus]		ex_reg2_i;
-	wire 				ex_wreg_i;
-	wire[`RegAddrBus]	ex_wd_i;
+	logic[`AluOpBus]		ex_aluop_i;
+	logic[`AluSelBus]	ex_alusel_i;
+logic[`RegBus]		ex_reg1_i;
+logic[`RegBus]		ex_reg2_i;
+logic 				ex_wreg_i;
+logic[`RegAddrBus]	ex_wd_i;
 
 	// EX -> EX/MEM
 
-	wire				ex_wreg_o;
-	wire[`RegBus]		ex_wdata_o;
-	wire[`RegAddrBus]	ex_wd_o;
+logic				ex_wreg_o;
+logic[`RegBus]		ex_wdata_o;
+logic[`RegAddrBus]	ex_wd_o;
 
 	// EX/MEM -> MEM
 
-	wire 				mem_wreg_i;
-	wire[`RegBus]		mem_wdata_i;
-	wire[`RegAddrBus]	mem_wd_i;
+logic 				mem_wreg_i;
+logic[`RegBus]		mem_wdata_i;
+logic[`RegAddrBus]	mem_wd_i;
 
 	// MEM -> MEM/WB
 
-	wire 				mem_wreg_o;
-	wire[`RegBus]		mem_wdata_o;
-	wire[`RegAddrBus]	mem_wd_o;
+logic 				mem_wreg_o;
+logic[`RegBus]		mem_wdata_o;
+logic[`RegAddrBus]	mem_wd_o;
 
 	// MEM/WB -> WB   
 	// Ko No Write Back Da!
 
-	wire				wb_wreg_i;
-	wire[`RegBus]		wb_wdata_i;
-	wire[`RegAddrBus]	wb_wd_i;
+logic				wb_wreg_i;
+logic[`RegBus]		wb_wdata_i;
+logic[`RegAddrBus]	wb_wd_i;
 
 	// ID <-> Regfile
 
-	wire				reg1_read;
-	wire				reg2_read;
-	wire[`RegBus]		reg1_data;
-	wire[`RegBus]		reg2_data;
-	wire[`RegAddrBus]	reg1_addr;
-	wire[`RegAddrBus]	reg2_addr;
+logic				reg1_read;
+logic				reg2_read;
+logic[`RegBus]		reg1_data;
+logic[`RegBus]		reg2_data;
+logic[`RegAddrBus]	reg1_addr;
+logic[`RegAddrBus]	reg2_addr;
 	
 	// observer <-> Regfile
 	
-	wire				ob_reg_read;
-	wire[`RegBus]		ob_reg_data;
-	wire[`RegAddrBus] 	ob_reg_addr;
+logic				ob_reg_read;
+logic[`RegBus]		ob_reg_data;
+logic[`RegAddrBus] 	ob_reg_addr;
 
 	//***********realizations************
 
 	// observer!
 	observer ob0(
+		.clk(clk),
 		.reg_data_i (ob_reg_data),
 		.reg_sel_o	(ob_reg_addr),
 		.reg_read_o (ob_reg_read),
@@ -98,7 +100,7 @@ module Naive_CPU(
 		.alu_o_i	(ex_wdata_o),
 
 		.reg_sel_i	(ob_sel),
-		.mode_i		(ob_mode),
+		.mode_i		(ob_mode_i),
 		.data_o		(ob_data_o)
 	);
 	// PC
@@ -111,7 +113,6 @@ module Naive_CPU(
 	);
 
 	assign rom_addr_o = pc;
-	
 	// realize IF/ID
 	IF_ID if_id0(
 		.rst	(rst),

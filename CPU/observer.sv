@@ -4,6 +4,7 @@
 `timescale 1ns/1ps
 `include "defines.sv"
 module observer(
+    input clk,
     input logic[`RegBus]            reg_data_i,
     input logic[`InstAddrBus]       pc_i,
     input logic[`InstBus]           ir_i,
@@ -20,40 +21,40 @@ module observer(
 );
     assign reg_sel_o = reg_sel_i;
 
-    always_comb begin:read_reg
+    always_ff @(posedge clk) begin:read_reg
         if(mode_i == 3'd3) begin
-            reg_read_o = 1'b1;
+            reg_read_o <= 1'b1;
         end else begin
-            reg_read_o = 1'b0;
+            reg_read_o <= 1'b0;
         end
     end
 
-    always_comb begin:data_select
+    always_ff @(posedge clk) begin:data_select
         case(mode_i)
             3'd0: begin
-                data_o = pc_i;
+                data_o <= pc_i;
             end
             3'd1:begin
-                data_o = ir_i;
+                data_o <= ir_i;
             end
             3'd2:begin
                 case(reg_sel_i)
                     4'd1:begin
-                        data_o = alu_a_i;
+                        data_o <= alu_a_i;
                     end
                     4'd2:begin
-                        data_o = alu_b_i;
+                        data_o <= alu_b_i;
                     end
                     default: begin
-                        data_o = alu_o_i;
+                        data_o <= alu_o_i;
                     end
                 endcase
             end
             3'd3:begin
-                data_o = reg_data_i;
+                data_o <= reg_data_i;
             end
             default:begin
-                data_o = `ZeroWord;
+                data_o <= `ZeroWord;
             end
         endcase 
     end
