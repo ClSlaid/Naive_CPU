@@ -1,42 +1,52 @@
+//cpu_full_tb.sv
+// whole of flow
 `timescale 1ns/1ps
 `include "../CPU/defines.sv"
+`include "../CPU/observer.sv"
 `include "../CPU/if_pc.sv"
-`include "../CPU/IF_ID.sv"
 `include "../CPU/id.sv"
 `include "../CPU/ID_EX.sv"
 `include "../CPU/ex_alu.sv"
 `include "../CPU/EX_MEM.sv"
 `include "../CPU/mem.sv"
 `include "../CPU/MEM_WB.sv"
+`include "../CPU/regfile.sv"
 
-module CPU_FULL_TB();
-    reg				rst;
-	reg					clk;
+module cpu_full_tb;
+    reg clk;
+    reg rst;
 
-	reg[`RegBus]		rom_data_i;
-	wire[`InstAddrBus]		rom_addr_o;		
-	wire				rom_ce_o;		// ROM Enable
-	
-	// sampling ports
-	reg[`RegAddrBus]	ob_sel;
-	wire[`RegBus]		ob_data_o;
+    reg [`RegAddrBus]ob_sel;
+    reg [2:0]ob_mode_i;
+    wire [`RegBus] ob_data_o;
 
-	reg[2:0]			ob_mode;
-
-    // IF/ID -> ID
+	reg [`InstBus] rom_data_i;
+	wire [`InstAddrBus] rom_addr_o;
+	logic rom_ce_o;
+	// pc -> IF/ID
 
 	wire[`InstAddrBus]	pc;
+    // IF/ID -> ID
+
 	wire[`InstAddrBus]	id_pc_i;
 	wire[`InstBus]		id_inst_i;
 
-	// ID -> ID/EX
-
+    // ID -> ID/EX
 	wire[`AluOpBus]		id_aluop_o;
 	wire[`AluSelBus]	id_alusel_o;
 	wire[`RegBus]		id_reg1_o;
 	wire[`RegBus]		id_reg2_o;
-	wire				id_wreg_o;
-	wire[`RegAddrBus]	id_wd_o;
+    wire                 id_wreg_o;
+	wire[`RegAddrBus]	id_wd_o;	
+    
+    // ID <-> Regfile
+	wire				reg1_read;
+	wire				reg2_read;
+	wire[`RegBus]		reg1_data;
+	wire[`RegBus]		reg2_data;
+	wire[`RegAddrBus]	reg1_addr;
+	wire[`RegAddrBus]	reg2_addr;
+
 
 	// ID/EX -> EX
 
@@ -70,27 +80,37 @@ module CPU_FULL_TB();
 
 	wire				wb_wreg_i;
 	wire[`RegBus]		wb_wdata_i;
-	wire[`RegAddrBus]	wb_wd_i;
-
-	// ID <-> Regfile
-
-	wire				reg1_read;
-	wire				reg2_read;
-	wire[`RegBus]		reg1_data;
-	wire[`RegBus]		reg2_data;
-	wire[`RegAddrBus]	reg1_addr;
-	wire[`RegAddrBus]	reg2_addr;
-	
-	// observer <-> Regfile
+	wire[`RegAddrBus]	wb_wd_i;	
+    // observer <-> Regfile
 	
 	wire				ob_reg_read;
 	wire[`RegBus]		ob_reg_data;
 	wire[`RegAddrBus] 	ob_reg_addr;
 
-	//***********realizations************
 
-	// observer!
-	observer ob0(
+	regfile regfile0(
+		.clk(clk),
+		.rst(rst),
+
+		.we(wb_wreg_i),
+		.waddr(wb_wd_i),
+		.wdata(wb_wdata_i),
+
+		.r1e(reg1_read),
+		.r2e(reg2_read),
+		.r1addr(reg1_addr),
+		.r2addr(reg2_addr),
+		.r1data(reg1_data),
+		.r2data(reg2_data),
+
+		.rse(ob_reg_read),
+		.rsaddr(ob_reg_addr),
+		.rsdata(ob_reg_data)
+
+	);
+
+    observer ob0(
+		.clk(clk),
 		.reg_data_i (ob_reg_data),
 		.reg_sel_o	(ob_reg_addr),
 		.reg_read_o (ob_reg_read),
@@ -103,7 +123,7 @@ module CPU_FULL_TB();
 		.alu_o_i	(ex_wdata_o),
 
 		.reg_sel_i	(ob_sel),
-		.mode_i		(ob_mode),
+		.mode_i		(ob_mode_i),
 		.data_o		(ob_data_o)
 	);
 	// PC
@@ -116,7 +136,6 @@ module CPU_FULL_TB();
 	);
 
 	assign rom_addr_o = pc;
-	// realize IF/ID
 	IF_ID if_id0(
 		.rst	(rst),
 		.clk	(clk),
@@ -128,8 +147,7 @@ module CPU_FULL_TB();
 		.id_inst(id_inst_i)
 	);
 
-	// realize ID
-	id	id0(
+    id	id0(
 		.rst(rst),
 		.if_pc(id_pc_i),
 		.if_inst(id_inst_i),
@@ -158,30 +176,7 @@ module CPU_FULL_TB();
 		.wreg_o(id_wreg_o)
 	);
 
-	// realization of Regfile (WB)
-
-	regfile regfile0(
-		.clk(clk),
-		.rst(rst),
-
-		.we(wb_wreg_i),
-		.waddr(wb_wd_i),
-		.wdata(wb_wdata_i),
-
-		.r1e(reg1_read),
-		.r2e(reg2_read),
-		.r1addr(reg1_addr),
-		.r2addr(reg2_addr),
-		.r1data(reg1_data),
-
-		.rse(ob_reg_read),
-		.rsaddr(ob_reg_addr),
-		.rsdata(ob_reg_data)
-	);
-
-	// realization of ID/EX
-
-	ID_EX id_ex0(
+    ID_EX id_ex0(
 		.clk(clk),
 		.rst(rst),
 
@@ -263,14 +258,30 @@ module CPU_FULL_TB();
 	);
 
     initial begin
-    clk = 0;
-    rst = 1;
-    ob_mode = 3'b0;
-    ob_sel = 4'h0;
-    #40 rst = 0;
-    end
+		ob_mode_i = 3'b0;
+        rst = `RstEnable;
+        clk = 1'b1;
 
-    always #5 clk = ~clk;
-    always rom_data_i = 16'b001101_0001_000011;
+        rom_data_i = 16'h3443;
+		ob_sel = 4'h1;
+		// pc = 16'b0;
+
+    //    reg1_data = 16'b110011;
+    //    reg2_data = 16'b101001;
+        
+        #20 rst = `RstDisable;
+    end
+    always #5 begin
+        clk = ~clk;
+    end
+    always #5 ob_sel = ob_sel + 1'b1;
+    always #25 begin
+         ob_mode_i = ob_mode_i + 1'b1;
+    end
+	// always #10 begin
+	// 	if (rst == `RstDisable) begin
+	// 		pc = pc + 1'b1;
+	// 	end
+	// end
 
 endmodule
