@@ -43,11 +43,33 @@ module ex_alu(
         end // End Else
     end
 
+    logic [`RegBus] shiftout;
+    always_comb begin: SHIFT
+        if(rst == `RstEnable) begin
+            shiftout = `ZeroWord;
+        end else begin
+            case(aluop_i)
+                `EXE_SLL_OP: begin
+                   shiftout = reg1_i << reg2_i; 
+                end
+                `EXE_SRL_OP: begin
+                    shiftout = reg1_i >> reg2_i;
+                end
+                default: begin
+                    shiftout = shiftout;
+                end
+            endcase
+        end
+    end
+
     always_comb begin: outcome
         wd_o = wd_i;
         wreg_o = wreg_i;
 
         case(alusel_i)
+            `EXE_RES_SHIFT: begin
+                wdata_o = shiftout;
+            end
             `EXE_RES_LOGIC:begin
                 wdata_o = logicout;
             end

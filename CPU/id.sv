@@ -173,6 +173,78 @@ module id(
 					inst_valid = `InstValid;
 				
 				end
+				`EXE_LI: begin
+					wreg_o = `WriteEnable;
+
+					aluop = `EXE_OR_OP;
+					alusel = `EXE_RES_LOGIC;
+
+					reg1_read = 1'b0;	// not read from rd
+					reg2_read = 1'b0;	// not read from rs
+
+					reg1_read_addr = rd;
+					reg2_read_addr = rs;
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+
+				end
+				`EXE_SLL:	begin
+					wreg_o = `WriteEnable;
+
+					aluop = `EXE_SLL_OP;
+					alusel = `EXE_RES_SHIFT;
+
+					reg1_read = 1'b1;	// read from rd
+					reg2_read = 1'b1;	// read from rs
+
+					reg1_read_addr = rd;
+					reg2_read_addr = rs;
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+				end
+				`EXE_SRL:	begin
+					wreg_o = `WriteEnable;
+
+					aluop = `EXE_SRL_OP;
+					alusel = `EXE_RES_SHIFT;
+
+					reg1_read = 1'b1;	// read from rd
+					reg2_read = 1'b1;	// read from rs
+
+					reg1_read_addr = rd;
+					reg2_read_addr = rs;
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+				end
+				`EXE_SLLI:	begin
+					wreg_o = `WriteEnable;
+					aluop = `EXE_SLL_OP;
+					alusel = `EXE_RES_SHIFT;
+
+					reg1_read = 1'b1;	// read from rd
+					reg2_read = 1'b0;	// not read from rs
+
+					reg1_read_addr = rd;	// read from rd
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+				end
+				`EXE_SRLI:	begin
+					wreg_o = `WriteEnable;
+					aluop = `EXE_SRL_OP;
+					alusel = `EXE_RES_SHIFT;
+
+					reg1_read = 1'b1;	// read from rd
+					reg2_read = 1'b0;	// not read from rs
+
+					reg1_read_addr = rd;	// read from rd
+
+					wd_o = rd;
+					inst_valid = `InstValid;
+				end
 				default:	begin
 				end
 			

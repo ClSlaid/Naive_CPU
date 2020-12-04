@@ -1,16 +1,7 @@
 `timescale 1ns/1ps
 `include "../CPU/defines.sv"
 `include "../CPU/Naive_CPU.sv"
-`include "../CPU/ex_alu.sv"
-`include "../CPU/EX_MEM.sv"
-`include "../CPU/ID_EX.sv"
-`include "../CPU/id.sv"
-`include "../CPU/IF_ID.sv"
-`include "../CPU/if_pc.sv"
-`include "../CPU/MEM_WB.sv"
-`include "../CPU/mem.sv"
-`include "../CPU/regfile.sv"
-`include "../CPU/observer.sv"
+
 
 module CPU_tb();
 reg clk;

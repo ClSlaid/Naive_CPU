@@ -41,9 +41,13 @@
 `define EXE_XORI        6'b001110   // Instruction XORI; Known as: XORI rd imm;
 
 `define EXE_NOR         6'b100111
-// -----------???---------
-`define EXE_LUI         6'b001111
+// -----------load---------
+`define EXE_LI         6'b001111   // Instruction LUI; Known as: LUI rd imm;
 // -----------positional---------
+`define EXE_SLL         6'b000000   // Instruction SLL; Know as: SLL rd rs;
+`define EXE_SRL         6'b000001   // Instruction SRL; Known as: SRL rd rs;
+`define EXE_SLLI        6'b000010   // Instruction SLLI; Known as: SLLI rd imm;
+`define EXE_SRLI        6'b000011   // Instruction SRLI; Known as: SRLI rd imm;
 
 // Alu Operations
 `define EXE_AND_OP          8'b00100100
@@ -53,7 +57,10 @@
 
 `define EXE_NOP_OP		8'b00000000
 
+`define EXE_SLL_OP	    8'b00000000
+`define EXE_SRL_OP	    8'b00000001
 // AluSel
+`define EXE_RES_SHIFT   3'b010
 `define EXE_RES_LOGIC	3'b001
 `define EXE_RES_NOP		3'b000
 

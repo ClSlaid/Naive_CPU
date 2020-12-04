@@ -1,7 +1,17 @@
-// naive cpu
+// naive cpu 
 // author: ClSlaid <cailue@bupt.edu.cn>
 `timescale 1ns/1ps
 `include "defines.sv"
+`include "../CPU/ex_alu.sv"
+`include "../CPU/EX_MEM.sv"
+`include "../CPU/ID_EX.sv"
+`include "../CPU/id.sv"
+`include "../CPU/IF_ID.sv"
+`include "../CPU/if_pc.sv"
+`include "../CPU/MEM_WB.sv"
+`include "../CPU/mem.sv"
+`include "../CPU/regfile.sv"
+`include "../CPU/observer.sv"
 
 module Naive_CPU(
 	input logic					rst,
@@ -87,7 +97,6 @@ logic[`RegAddrBus] 	ob_reg_addr;
 
 	// observer!
 	observer ob0(
-		.clk(clk),
 		.reg_data_i (ob_reg_data),
 		.reg_sel_o	(ob_reg_addr),
 		.reg_read_o (ob_reg_read),
