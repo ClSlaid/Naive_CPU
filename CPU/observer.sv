@@ -12,7 +12,7 @@ module observer(
     input logic[`RegBus]            alu_o_i,
 
     input logic[`RegAddrBus]        reg_sel_i,
-    input logic[2:0]                mode_i,
+    input logic[1:0]                mode_i,
 
     output logic[`RegAddrBus]       reg_sel_o,
     output logic                    reg_read_o,
@@ -21,7 +21,7 @@ module observer(
     assign reg_sel_o = reg_sel_i;
 
     always_comb begin:read_reg
-        if(mode_i == 3'd0) begin
+        if(mode_i == 2'd0) begin
             reg_read_o = 1'b1;
         end else begin
             reg_read_o = 1'b0;
@@ -30,13 +30,10 @@ module observer(
 
     always_comb begin:data_select
         case(mode_i)
-            3'd0: begin
+            2'b00: begin
                 data_o = reg_data_i;
             end
-            3'd1:begin
-                data_o = ir_i;
-            end
-            3'd2:begin
+            2'b01:begin
                 case(reg_sel_i)
                     4'd0:begin
                         data_o = `ZeroWord;
@@ -55,12 +52,12 @@ module observer(
                     end
                 endcase
             end
-            3'd3:begin
+            2'b11:begin
                 case(reg_sel_i)
-                    4'd14:begin
+                    4'b1110:begin
                         data_o = pc_i;
                     end
-                    4'd15:begin
+                    4'b1111:begin
                         data_o = ir_i;
                     end
                     default:begin

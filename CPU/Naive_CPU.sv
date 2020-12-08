@@ -2,16 +2,16 @@
 // author: ClSlaid <cailue@bupt.edu.cn>
 `timescale 1ns/1ps
 `include "defines.sv"
-`include "../CPU/ex_alu.sv"
-`include "../CPU/EX_MEM.sv"
-`include "../CPU/ID_EX.sv"
-`include "../CPU/id.sv"
-`include "../CPU/IF_ID.sv"
-`include "../CPU/if_pc.sv"
-`include "../CPU/MEM_WB.sv"
-`include "../CPU/mem.sv"
-`include "../CPU/regfile.sv"
-`include "../CPU/observer.sv"
+//`include "../CPU/ex_alu.sv"
+//`include "../CPU/EX_MEM.sv"
+//`include "../CPU/ID_EX.sv"
+//`include "../CPU/id.sv"
+//`include "../CPU/IF_ID.sv"
+//`include "../CPU/if_pc.sv"
+//`include "../CPU/MEM_WB.sv"
+//`include "../CPU/mem.sv"
+//`include "../CPU/regfile.sv"
+//`include "../CPU/observer.sv"
 
 module Naive_CPU(
 	input logic					rst,
@@ -25,7 +25,7 @@ module Naive_CPU(
 	input logic[`RegAddrBus]	ob_sel,
 	output logic[`RegBus]		ob_data_o,
 
-	input logic[2:0]			ob_mode_i
+	input logic[1:0]			ob_mode_i
 );
 	// pc -> IF/ID
 

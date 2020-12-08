@@ -56,7 +56,7 @@ module ex_alu(
                     shiftout = reg1_i >> reg2_i;
                 end
                 default: begin
-                    shiftout = shiftout;
+                    shiftout = `ZeroWord;
                 end
             endcase
         end
